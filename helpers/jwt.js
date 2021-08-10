@@ -7,7 +7,7 @@ const generarJWT = ( uid = '' )=>{
     const payload = { uid };
 
     jwt.sign( payload, privateKey, {
-      expiresIn: '30m'
+      expiresIn: '60m'
 
     }, ( err, token )=>{
 
