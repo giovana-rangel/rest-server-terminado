@@ -1,7 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 const { dbConnection } = require('../database/config.js');
-require('dotenv').config();
 
 class Server {
   constructor(){
@@ -13,7 +14,8 @@ class Server {
       user:       '/api/users',
       categorias: '/api/categorias',
       productos:  '/api/productos',
-      buscar:     '/api/buscar'
+      buscar:     '/api/buscar',
+      uploads:    '/api/uploads'
     }
 
     //Conectar a base de datos
@@ -38,14 +40,22 @@ class Server {
 
     //directorio público
     this.app.use( express.static('public') )
+
+    //fileupload(de express) - carga de archivos
+    this.app.use(fileUpload({
+      useTempFiles : true,
+      tempFileDir : '/tmp/',
+      createParentPath: true
+    }));
   }
 
   routes(){
-    this.app.use(this.paths.auth , require('../routers/auth.js'));
+    this.app.use(this.paths.auth , require('../routers/auth'));
     this.app.use(this.paths.buscar, require('../routers/buscar'));
-    this.app.use(this.paths.categorias , require('../routers/categorias.js'));
-    this.app.use(this.paths.productos , require('../routers/productos.js'));
-    this.app.use(this.paths.user , require('../routers/users.js'));
+    this.app.use(this.paths.categorias , require('../routers/categorias'));
+    this.app.use(this.paths.productos , require('../routers/productos'));
+    this.app.use(this.paths.uploads , require('../routers/uploads'));
+    this.app.use(this.paths.user , require('../routers/users'));
   }
 
   listen(){
